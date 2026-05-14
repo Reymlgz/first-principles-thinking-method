@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>First Principles — Reason from atoms, not analogies.</title>
+<meta name="description" content="A field guide to first principles thinking for software engineers and engineering teams." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Colors */
+    --color-midnight-void: #101010;
+    --color-deep-space: #080808;
+    --color-polar-white: #F3F3F3;
+    --color-absolute-zero: #FFFFFF;
+    --color-ash-gray: #949494;
+    --color-dark-carbon: #333333;
+    --color-slate: #C1C1C1;
+    --color-amber-glow: #E7C59A;
+    --color-neon-green: #00AC5C;
+
+    /* Type */
+    --font-aeonik: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-input: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --text-caption: 13px;
+    --text-subheading: 18px;
+    --text-heading-sm: 21px;
+    --text-heading: 23px;
+    --text-heading-lg: 34px;
+    --text-display: 44px;
+    --text-display-lg: 63px;
+
+    /* Spacing & radii */
+    --spacing-4: 4px;
+    --spacing-8: 8px;
+    --spacing-12: 12px;
+    --spacing-16: 16px;
+    --spacing-20: 20px;
+    --spacing-24: 24px;
+    --spacing-40: 40px;
+    --section-gap: 64px;
+    --card-padding: 24px;
+    --element-gap: 10px;
+    --radius-md: 4.5px;
+    --radius-lg: 8px;
+    --radius-2xl: 20px;
+    --radius-full: 99px;
+
+    --max-width: 1180px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--color-midnight-void);
+    color: var(--color-polar-white);
+    font-family: var(--font-aeonik);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  ::selection { background: var(--color-amber-glow); color: var(--color-midnight-void); }
+
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* HEADER */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(16,16,16,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-dark-carbon);
+  }
+  header.site .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--text-subheading);
+    font-weight: 700;
+    letter-spacing: -0.011em;
+  }
+  .logo-mark {
+    width: 22px;
+    height: 22px;
+    display: inline-block;
+    background-image: radial-gradient(var(--color-polar-white) 1.2px, transparent 1.4px);
+    background-size: 4px 4px;
+    background-position: 0 0;
+  }
+  nav.primary {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  nav.primary a.navlink {
+    font-size: 16px;
+    color: var(--color-polar-white);
+  }
+  nav.primary a.navlink.muted { color: var(--color-ash-gray); }
+  .nav-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tag-new {
+    display: inline-block;
+    padding: 2px 6px;
+    background: var(--color-amber-glow);
+    color: var(--color-midnight-void);
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .small-meta {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-ash-gray);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+  }
+  .dot-sm {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-neon-green);
+    box-shadow: 0 0 0 3px rgba(0,172,92,0.18);
+    display: inline-block;
+  }
+
+  /* HERO */
+  section.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 96px 0 64px;
+    border-bottom: 1px solid var(--color-dark-carbon);
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(243,243,243,0.18) 1px, transparent 1.4px);
+    background-size: 14px 14px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 30%, transparent 75%);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    background: var(--color-neon-green);
+    color: var(--color-polar-white);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-polar-white);
+    box-shadow: 0 0 0 3px rgba(243,243,243,0.18);
+  }
+  .pill-amber { background: var(--color-amber-glow); color: var(--color-midnight-void); }
+
+  h1.display {
+    font-size: var(--text-display-lg);
+    line-height: 0.95;
+    letter-spacing: -0.011em;
+    font-weight: 700;
+    margin: 20px 0 16px;
+    max-width: 12ch;
+  }
+  .hero p.lede {
+    font-size: var(--text-subheading);
+    line-height: 1.31;
+    color: var(--color-polar-white);
+    max-width: 60ch;
+    margin: 0 0 32px;
+  }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--color-polar-white);
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn.primary {
+    background: transparent;
+    color: var(--color-polar-white);
+    border: 1px solid var(--color-polar-white);
+  }
+  .btn.secondary { color: var(--color-ash-gray); }
+  .btn.manifesto {
+    background: var(--color-dark-carbon);
+    color: var(--color-absolute-zero);
+    border-radius: 4.5px;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+  }
+  .btn::after { content: "→"; font-size: 13px; opacity: 0.7; }
+
+  /* META STRIP */
+  .meta-strip {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--color-dark-carbon);
+    border: 1px solid var(--color-dark-carbon);
+  }
+  .meta-cell {
+    background: var(--color-midnight-void);
+    padding: 20px 18px;
+  }
+  .meta-cell .k {
+    color: var(--color-ash-gray);
+    font-family: var(--font-input);
+    letter-spacing: -0.022em;
+    font-size: 13px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .meta-cell .v {
+    font-size: var(--text-heading-sm);
+    line-height: 1.22;
+    font-weight: 500;
+  }
+  .meta-cell .v .accent { color: var(--color-amber-glow); }
+
+  /* SECTIONS */
+  section.bordered {
+    border-bottom: 1px solid var(--color-dark-carbon);
+  }
+  section.padded { padding: var(--section-gap) 0; }
+  section.deep { background: var(--color-deep-space); }
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-ash-gray);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .eyebrow .ix {
+    color: var(--color-amber-glow);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 22px;
+    height: 1px;
+    background: var(--color-dark-carbon);
+    display: inline-block;
+  }
+
+  h2.section-title {
+    font-size: var(--text-display);
+    line-height: 1.03;
+    font-weight: 700;
+    letter-spacing: -0.011em;
+    margin: 0 0 16px;
+    max-width: 22ch;
+  }
+  p.section-lead {
+    font-size: var(--text-subheading);
+    line-height: 1.31;
+    color: var(--color-ash-gray);
+    max-width: 64ch;
+    margin: 0 0 40px;
+  }
+  p.section-lead strong { color: var(--color-polar-white); font-weight: 500; }
+
+  /* QUOTE */
+  .quote-block {
+    border-left: 1px solid var(--color-amber-glow);
+    padding: 12px 0 12px 20px;
+    margin: 32px 0;
+    max-width: 64ch;
+  }
+  .quote-block .q {
+    font-size: var(--text-heading);
+    line-height: 1.28;
+    color: var(--color-polar-white);
+    font-weight: 400;
+  }
+  .quote-block .a {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-ash-gray);
+    margin-top: 12px;
+  }
+
+  /* COMPARISON */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--color-dark-carbon);
+    border: 1px solid var(--color-dark-carbon);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .compare > div {
+    background: var(--color-deep-space);
+    padding: var(--card-padding);
+  }
+  .compare > div.lhs { background: #0c0c0c; }
+  .compare h3 {
+    font-size: var(--text-heading);
+    line-height: 1.11;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .compare .label {
+    font-family: var(--font-input);
+    font-size: 13px;
+    color: var(--color-ash-gray);
+    letter-spacing: -0.022em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .compare ul {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+  }
+  .compare ul li {
+    padding: 10px 0;
+    border-top: 1px dashed var(--color-dark-carbon);
+    color: var(--color-polar-white);
+    font-size: 16px;
+  }
+  .compare ul li::before {
+    content: "→";
+    color: var(--color-ash-gray);
+    margin-right: 10px;
+    font-family: var(--font-input);
+  }
+  .compare .rhs ul li::before { color: var(--color-amber-glow); }
+
+  /* STEP CARDS */
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--color-dark-carbon);
+    border: 1px solid var(--color-dark-carbon);
+  }
+  .step {
+    background: var(--color-deep-space);
+    padding: var(--card-padding);
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+  }
+  .step .num {
+    font-family: var(--font-input);
+    font-size: 13px;
+    color: var(--color-amber-glow);
+    margin-bottom: 12px;
+    letter-spacing: -0.022em;
+  }
+  .step h3 {
+    font-size: var(--text-heading-sm);
+    line-height: 1.22;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .step p {
+    color: var(--color-ash-gray);
+    font-size: 16px;
+    margin: 0 0 16px;
+  }
+  .step .prompt {
+    margin-top: auto;
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-polar-white);
+    padding: 10px 12px;
+    background: rgba(243,243,243,0.04);
+    border: 1px solid var(--color-dark-carbon);
+    border-radius: var(--radius-md);
+  }
+
+  /* TOOLKIT */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .tool {
+    background: var(--color-deep-space);
+    border: 1px solid var(--color-dark-carbon);
+    padding: var(--card-padding);
+    border-radius: var(--radius-lg);
+  }
+  .tool .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .tool h3 {
+    font-size: var(--text-heading);
+    line-height: 1.11;
+    font-weight: 700;
+    margin: 0;
+  }
+  .tool .tag {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-amber-glow);
+    text-transform: uppercase;
+  }
+  .tool p { color: var(--color-ash-gray); margin: 0 0 16px; }
+  .tool .recipe {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-polar-white);
+    background: rgba(255,255,255,0.03);
+    border-left: 1px solid var(--color-amber-glow);
+    padding: 12px 16px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  /* EXAMPLE CARDS */
+  .examples {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .ex {
+    background: var(--color-deep-space);
+    border: 1px solid var(--color-dark-carbon);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .ex .ex-head {
+    padding: 20px var(--card-padding);
+    border-bottom: 1px solid var(--color-dark-carbon);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .ex .ex-head .ix-num {
+    font-family: var(--font-input);
+    font-size: 13px;
+    color: var(--color-amber-glow);
+    letter-spacing: -0.022em;
+  }
+  .ex .ex-head h3 {
+    font-size: var(--text-heading);
+    line-height: 1.11;
+    font-weight: 700;
+    margin: 0;
+    flex: 1;
+  }
+  .ex .ex-head .topic {
+    font-family: var(--font-input);
+    font-size: 13px;
+    color: var(--color-ash-gray);
+    letter-spacing: -0.022em;
+    text-transform: uppercase;
+  }
+  .ex .body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .ex .body > div {
+    padding: 20px var(--card-padding);
+    border-right: 1px solid var(--color-dark-carbon);
+  }
+  .ex .body > div:last-child { border-right: none; }
+  .ex .body h4 {
+    font-family: var(--font-input);
+    font-size: 13px;
+    color: var(--color-ash-gray);
+    letter-spacing: -0.022em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+    font-weight: 400;
+  }
+  .ex .body h4.fp { color: var(--color-amber-glow); }
+  .ex .body p { margin: 0; color: var(--color-polar-white); font-size: 16px; }
+  .ex .body p.muted { color: var(--color-ash-gray); }
+
+  /* TEAM / WORKFLOW */
+  .workflow-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .panel {
+    background: var(--color-deep-space);
+    border: 1px solid var(--color-dark-carbon);
+    border-radius: var(--radius-lg);
+    padding: var(--card-padding);
+  }
+  .panel h3 {
+    font-size: var(--text-heading);
+    line-height: 1.11;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .panel p { color: var(--color-ash-gray); margin: 0 0 16px; }
+  .panel ol, .panel ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+  .panel ol li {
+    counter-increment: step;
+    padding: 12px 0 12px 36px;
+    border-top: 1px dashed var(--color-dark-carbon);
+    position: relative;
+    color: var(--color-polar-white);
+  }
+  .panel ol li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 12px;
+    font-family: var(--font-input);
+    font-size: 13px;
+    color: var(--color-amber-glow);
+    letter-spacing: -0.022em;
+  }
+  .panel ul li {
+    padding: 10px 0;
+    border-top: 1px dashed var(--color-dark-carbon);
+    color: var(--color-polar-white);
+  }
+  .panel ul li::before {
+    content: "·";
+    color: var(--color-amber-glow);
+    margin-right: 12px;
+  }
+
+  /* PROMPT BANK */
+  .promptbank {
+    background: var(--color-deep-space);
+    border: 1px solid var(--color-dark-carbon);
+    border-radius: var(--radius-lg);
+    padding: var(--card-padding);
+  }
+  .promptbank h3 {
+    font-size: var(--text-heading-sm);
+    line-height: 1.22;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+  .promptbank .qrow {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-top: 1px dashed var(--color-dark-carbon);
+  }
+  .promptbank .qrow:first-of-type { border-top: none; padding-top: 0; }
+  .promptbank .qrow .ctx {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-amber-glow);
+    min-width: 130px;
+    padding-top: 2px;
+    text-transform: uppercase;
+  }
+  .promptbank .qrow .q { color: var(--color-polar-white); font-size: 16px; flex: 1; }
+
+  /* PITFALLS */
+  .pitfall {
+    background: var(--color-deep-space);
+    border: 1px solid var(--color-dark-carbon);
+    border-radius: var(--radius-lg);
+    padding: var(--card-padding);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pitfall .pix {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-amber-glow);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pitfall .pix::before {
+    content: "▲";
+    color: var(--color-amber-glow);
+  }
+  .pitfall h3 {
+    font-size: var(--text-heading-sm);
+    line-height: 1.22;
+    font-weight: 700;
+    margin: 0;
+  }
+  .pitfall p { color: var(--color-ash-gray); margin: 0; }
+
+  /* MENTAL MODELS */
+  .models {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--color-dark-carbon);
+    border: 1px solid var(--color-dark-carbon);
+  }
+  .model {
+    background: var(--color-deep-space);
+    padding: var(--card-padding);
+  }
+  .model .glyph {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-amber-glow);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .model h3 {
+    font-size: var(--text-heading-sm);
+    line-height: 1.22;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  .model p { color: var(--color-ash-gray); margin: 0 0 8px; }
+  .model .pair {
+    font-family: var(--font-input);
+    font-size: 13px;
+    color: var(--color-polar-white);
+    letter-spacing: -0.022em;
+  }
+
+  /* DECOMPOSE diagram */
+  .decompose {
+    background: var(--color-deep-space);
+    border: 1px solid var(--color-dark-carbon);
+    border-radius: var(--radius-lg);
+    padding: 32px var(--card-padding);
+    font-family: var(--font-input);
+    font-size: 13px;
+    line-height: 1.5;
+    letter-spacing: -0.022em;
+    color: var(--color-polar-white);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .decompose .amber { color: var(--color-amber-glow); }
+  .decompose .muted { color: var(--color-ash-gray); }
+
+  /* CLOSING */
+  section.closing {
+    text-align: center;
+    padding: 96px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .closing-bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(243,243,243,0.14) 1px, transparent 1.3px);
+    background-size: 12px 12px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 30%, transparent 75%);
+    pointer-events: none;
+  }
+  section.closing .container { position: relative; }
+  section.closing h2 {
+    font-size: var(--text-display-lg);
+    line-height: 0.95;
+    letter-spacing: -0.011em;
+    font-weight: 700;
+    margin: 0 auto 24px;
+    max-width: 16ch;
+  }
+  section.closing p {
+    font-size: var(--text-subheading);
+    line-height: 1.31;
+    color: var(--color-ash-gray);
+    max-width: 52ch;
+    margin: 0 auto 32px;
+  }
+  .cta-center { display: inline-flex; gap: 12px; }
+
+  /* FOOTER */
+  footer.site {
+    border-top: 1px solid var(--color-dark-carbon);
+    padding: 32px 0 48px;
+    background: var(--color-deep-space);
+  }
+  footer.site .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  footer.site .small {
+    font-family: var(--font-input);
+    font-size: 13px;
+    letter-spacing: -0.022em;
+    color: var(--color-ash-gray);
+  }
+  footer.site nav { display: flex; gap: 20px; }
+  footer.site nav a { color: var(--color-ash-gray); font-size: 14px; }
+  footer.site nav a:hover { color: var(--color-polar-white); }
+
+  /* RESPONSIVE */
+  @media (max-width: 980px) {
+    h1.display { font-size: 44px; line-height: 1.03; }
+    h2.section-title { font-size: 34px; line-height: 1.07; }
+    section.closing h2 { font-size: 44px; line-height: 1.03; }
+    nav.primary { display: none; }
+    .meta-strip { grid-template-columns: repeat(2, 1fr); }
+    .compare { grid-template-columns: 1fr; }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .workflow-grid { grid-template-columns: 1fr; }
+    .models { grid-template-columns: 1fr; }
+    .ex .body { grid-template-columns: 1fr; }
+    .ex .body > div { border-right: none; border-bottom: 1px solid var(--color-dark-carbon); }
+    .ex .body > div:last-child { border-bottom: none; }
+  }
+  @media (max-width: 560px) {
+    h1.display { font-size: 34px; }
+    .meta-strip { grid-template-columns: 1fr; }
+    .grid-4 { grid-template-columns: 1fr; }
+    .pitfalls-grid { grid-template-columns: 1fr !important; }
+  }
+
+  .pitfalls-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site">
+  <div class="container row">
+    <a href="#" class="logo">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>FirstPrinciples</span>
+    </a>
+    <nav class="primary">
+      <a href="#origins" class="navlink">ORIGINS</a>
+      <a href="#method" class="navlink">METHOD</a>
+      <a href="#examples" class="navlink">EXAMPLES</a>
+      <a href="#team" class="navlink">TEAM</a>
+      <a href="#pitfalls" class="navlink">PITFALLS</a>
+      <a href="#models" class="navlink muted">MODELS</a>
+    </nav>
+    <div class="small-meta">
+      <span class="dot-sm" aria-hidden="true"></span>
+      INTERNAL · TEAM BRIEF
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <span class="pill"><span class="dot"></span>FOR THE TEAM · READING TIME ~12 MIN</span>
+    <h1 class="display">Reason from atoms, not analogies.</h1>
+    <p class="lede">First principles thinking means breaking a problem down to its irreducible truths and reasoning upward from there — instead of inheriting answers from what already exists. This page lays out how we want to approach hard problems together: the method, the questions, the examples from our world, and the failure modes to watch for.</p>
+
+    <div class="meta-strip">
+      <div class="meta-cell">
+        <div class="k">// ORIGIN</div>
+        <div class="v">Aristotle, <span class="accent">~350 BC</span></div>
+      </div>
+      <div class="meta-cell">
+        <div class="k">// MODE</div>
+        <div class="v">Derived <span class="accent">&gt;</span> Borrowed</div>
+      </div>
+      <div class="meta-cell">
+        <div class="k">// COST</div>
+        <div class="v">Slow, <span class="accent">non-linear payoff</span></div>
+      </div>
+      <div class="meta-cell">
+        <div class="k">// USE WHEN</div>
+        <div class="v">Stakes are high, <span class="accent">defaults are stale</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORIGINS -->
+<section id="origins" class="padded bordered">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">01</span>&nbsp;ORIGINS</div>
+    <h2 class="section-title">An idea older than the wheel — and just as useful.</h2>
+    <p class="section-lead">Over two thousand years ago, Aristotle called a first principle <strong>"the first basis from which a thing is known."</strong> In every systematic inquiry, he wrote, we acquire knowledge by working back to <em>primary causes</em>. Descartes restated it in the 17th century with his method of doubt: peel away every assumption you can possibly doubt until what remains is indubitable, and rebuild from there.</p>
+
+    <div class="quote-block">
+      <div class="q">"Physics teaches you to reason from first principles rather than by analogy. So I said, okay, let's look at the first principles. What is a rocket made of?"</div>
+      <div class="a">— Elon Musk, on cutting SpaceX launch costs ~10×</div>
+    </div>
+
+    <p class="section-lead">Modern proponents — Musk at SpaceX, Bezos at Amazon, Charlie Munger across decades of investing, and Richard Feynman in physics — all describe the same move: drop the inherited frame, list what's actually true, and rebuild. Most people don't. Most people, in Musk's phrase, <strong>"live life by analogy"</strong> — they project the current form forward instead of asking what function it has to serve.</p>
+  </div>
+</section>
+
+<!-- ANALOGY VS FIRST PRINCIPLES -->
+<section class="padded bordered deep">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">02</span>&nbsp;THE CONTRAST</div>
+    <h2 class="section-title">The cook follows the recipe. The chef knows why it works.</h2>
+    <p class="section-lead">Analogy is borrowed knowledge — fast, usually correct, useless when the situation is genuinely new. First principles is derived knowledge — slow, harder, the only thing that works when the analogy breaks.</p>
+
+    <div class="compare">
+      <div class="lhs">
+        <div class="label">// REASONING BY ANALOGY</div>
+        <h3>"It's like…"</h3>
+        <p style="color: var(--color-ash-gray); margin: 8px 0 0;">Map a new problem onto an old, familiar one and inherit its answer. Cheap to do, often right — until the analogy breaks.</p>
+        <ul>
+          <li>Everyone uses Postgres, we should too.</li>
+          <li>Stripe has a public API, ours should look the same.</li>
+          <li>The team did microservices last time — let's do it again.</li>
+          <li>Rockets cost $65M; that's the price.</li>
+          <li>"That's how we've always done it."</li>
+        </ul>
+      </div>
+      <div class="rhs">
+        <div class="label">// REASONING FROM FIRST PRINCIPLES</div>
+        <h3>"What is it actually made of?"</h3>
+        <p style="color: var(--color-ash-gray); margin: 8px 0 0;">List the irreducible facts of the situation, then build the answer up from there. Expensive — but you stop inheriting someone else's mistakes.</p>
+        <ul>
+          <li>What read/write patterns does <em>our</em> data have?</li>
+          <li>What guarantees does this API need to provide?</li>
+          <li>What's the actual coupling between these services?</li>
+          <li>Aluminum + titanium + carbon fiber = 2% of $65M.</li>
+          <li>What problem is this convention solving — does it still apply?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE METHOD -->
+<section id="method" class="padded bordered">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">03</span>&nbsp;THE METHOD</div>
+    <h2 class="section-title">Four moves. Run them in order.</h2>
+    <p class="section-lead">First principles isn't a vibe — it's a procedure. The same four steps work whether you're choosing a database, debugging a flaky test, or proposing an architecture change.</p>
+
+    <div class="grid-4">
+      <div class="step">
+        <div class="num">// STEP 01</div>
+        <h3>Frame the goal.</h3>
+        <p>State the outcome in plain language — not the solution. A solution dressed as a problem will lock you into the analogy you're trying to escape.</p>
+        <div class="prompt">"We want X" — not "we need to build Y to get X."</div>
+      </div>
+      <div class="step">
+        <div class="num">// STEP 02</div>
+        <h3>Decompose to atoms.</h3>
+        <p>Break the problem into the smallest pieces you're sure are true. Constraints, requirements, physical limits, data shape. Anything else is an assumption.</p>
+        <div class="prompt">Five Whys, until the answer is "I don't know."</div>
+      </div>
+      <div class="step">
+        <div class="num">// STEP 03</div>
+        <h3>Challenge each piece.</h3>
+        <p>For every "atom," ask: is this a fact, a constraint, or a convention? Conventions can be moved. Constraints can sometimes be renegotiated. Facts are the floor.</p>
+        <div class="prompt">"Why do we believe this? What changes if we don't?"</div>
+      </div>
+      <div class="step">
+        <div class="num">// STEP 04</div>
+        <h3>Rebuild from the floor.</h3>
+        <p>Compose a solution out of only the atoms you trust. If your result looks like the conventional answer, fine — you've earned it. If it doesn't, you've found something.</p>
+        <div class="prompt">"Given only these, what's the simplest thing that works?"</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+      <div class="decompose" aria-label="Example decomposition tree">
+<span class="muted">// PROBLEM</span>
+"Our checkout is slow."
+
+<span class="amber">└─ decompose ──┐</span>
+   ├─ <span class="amber">Latency budget:</span>   2400 ms p95   <span class="muted">(fact)</span>
+   ├─ <span class="amber">Network round-trips:</span> 14            <span class="muted">(measured)</span>
+   ├─ <span class="amber">DB queries:</span>        37            <span class="muted">(measured)</span>
+   ├─ Cache layer present  <span class="muted">(convention — "everyone caches checkout")</span>
+   ├─ Synchronous fraud check   <span class="muted">(assumption — was it ever benchmarked?)</span>
+   └─ "Must be SSR"         <span class="muted">(convention — inherited from prior arch)</span>
+
+<span class="amber">└─ challenge ─┐</span>
+   • The cache <span class="muted">hides</span> N+1 queries — does it solve the cause or mask it?
+   • Fraud check can run after order accept; rollback is cheap.
+   • SSR on this path adds 380 ms and isn't SEO-relevant.
+
+<span class="amber">└─ rebuild ───┐</span>
+   = Kill the cache. Fix N+1. Async fraud. CSR this route.
+   = Result: 2400 ms → 640 ms p95. No new infra.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLKIT -->
+<section class="padded bordered deep">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">04</span>&nbsp;TOOLKIT</div>
+    <h2 class="section-title">Four lenses that drive the method.</h2>
+    <p class="section-lead">These are the questioning techniques that actually get a room down to the floor. Use them inside the four-step method — they're the <em>how</em>, not a replacement for it.</p>
+
+    <div class="grid-2">
+      <div class="tool">
+        <div class="head">
+          <h3>Socratic Questioning</h3>
+          <span class="tag">// METHOD</span>
+        </div>
+        <p>A disciplined sequence of questions that exposes assumptions and tests reasoning. The point isn't to win — it's to surface what's actually believed.</p>
+        <div class="recipe">1. What do you mean by that?
+2. How do you know it's true?
+3. What's the evidence — and against it?
+4. What's an alternative view?
+5. What follows if you're right? If wrong?
+6. Why does this question matter?</div>
+      </div>
+
+      <div class="tool">
+        <div class="head">
+          <h3>The Five Whys</h3>
+          <span class="tag">// ROOT CAUSE</span>
+        </div>
+        <p>Take the visible problem and ask "why" until the answer stops moving — usually around the fourth or fifth pass. The honest endpoint is often "I don't know." That's the discovery.</p>
+        <div class="recipe">Bug: payment failed for user.
+1. Why? Webhook timed out.
+2. Why? Sync handler holds DB conn.
+3. Why? We retry inline.
+4. Why? No queue in this service.
+5. Why? Inherited from MVP.   ◀ root cause</div>
+      </div>
+
+      <div class="tool">
+        <div class="head">
+          <h3>The Feynman Technique</h3>
+          <span class="tag">// LEARNING</span>
+        </div>
+        <p>Explain the thing in plain language, as if to a smart 12-year-old. Wherever you reach for jargon, you've found a gap. Fill it. Re-explain. Repeat.</p>
+        <div class="recipe">"Idempotency is when…"
+  → catches yourself using "idempotent"
+  → reword: "doing it twice is the same as once"
+  → next gap: "why does that matter for retries?"
+  → keep going until no jargon remains.</div>
+      </div>
+
+      <div class="tool">
+        <div class="head">
+          <h3>Inversion</h3>
+          <span class="tag">// MUNGER</span>
+        </div>
+        <p>Don't ask "how do I make this succeed?" — ask "how would I guarantee this fails?" Then refuse to do those things. The fastest way to be smart is to stop being stupid.</p>
+        <div class="recipe">Goal: a reliable deploy pipeline.
+Invert: how would I break prod weekly?
+ → no rollback, no canary, no health check,
+   no tests, shared mutable state, manual
+   steps, no audit trail.
+Do the opposite. That's the spec.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOFTWARE EXAMPLES -->
+<section id="examples" class="padded bordered">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">05</span>&nbsp;IN SOFTWARE</div>
+    <h2 class="section-title">Seven places engineers default to analogy — and what changes when they don't.</h2>
+    <p class="section-lead">Most of these aren't dramatic. They're the small, daily decisions where teams quietly inherit someone else's answer. The win isn't always a rewrite. Sometimes it's a smaller scope, a deleted system, or just a different question in the design review.</p>
+
+    <div class="examples">
+
+      <div class="ex">
+        <div class="ex-head">
+          <span class="ix-num">01</span>
+          <h3>Monolith vs. microservices</h3>
+          <span class="topic">// ARCHITECTURE</span>
+        </div>
+        <div class="body">
+          <div>
+            <h4>The default analogy</h4>
+            <p class="muted">"Netflix and Amazon use microservices. We're scaling, so we should split too."</p>
+          </div>
+          <div>
+            <h4 class="fp">From first principles</h4>
+            <p>What are the actual coupling boundaries in the code? What independent deploy pressure exists? What's the team topology? Microservices solve organizational scaling, not request volume.</p>
+          </div>
+          <div>
+            <h4>What changes</h4>
+            <p class="muted">A 12-person team rediscovers that a well-modularized monolith plus one extracted service beats 14 microservices nobody owns.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex">
+        <div class="ex-head">
+          <span class="ix-num">02</span>
+          <h3>"We need a cache."</h3>
+          <span class="topic">// PERFORMANCE</span>
+        </div>
+        <div class="body">
+          <div>
+            <h4>The default analogy</h4>
+            <p class="muted">"This endpoint is slow. Put Redis in front of it. Every fast site has caching."</p>
+          </div>
+          <div>
+            <h4 class="fp">From first principles</h4>
+            <p>What does the endpoint actually do? Why is it slow — N+1, missing index, oversized payload, sync work that could be async? A cache often <em>hides</em> the cause and becomes a permanent dependency.</p>
+          </div>
+          <div>
+            <h4>What changes</h4>
+            <p class="muted">You add one index. p95 drops 8×. You never deploy Redis. The cache invalidation bug you would have shipped never exists.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex">
+        <div class="ex-head">
+          <span class="ix-num">03</span>
+          <h3>Build vs. buy</h3>
+          <span class="topic">// TOOLING</span>
+        </div>
+        <div class="body">
+          <div>
+            <h4>The default analogy</h4>
+            <p class="muted">"There's a SaaS for that. We pay $X/mo and avoid distraction." (Or the inverse: "We can build it in a weekend.")</p>
+          </div>
+          <div>
+            <h4 class="fp">From first principles</h4>
+            <p>What is core to <em>our</em> business and what is plumbing? What does the vendor actually do — data ingestion, retention, dashboards — and what would the in-house equivalent cost in ongoing maintenance, not just initial build?</p>
+          </div>
+          <div>
+            <h4>What changes</h4>
+            <p class="muted">You keep the vendor for analytics (commodity) and build the pricing engine in-house (proprietary). The opposite of what the loudest argument suggested.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex">
+        <div class="ex-head">
+          <span class="ix-num">04</span>
+          <h3>Picking a database</h3>
+          <span class="topic">// PERSISTENCE</span>
+        </div>
+        <div class="body">
+          <div>
+            <h4>The default analogy</h4>
+            <p class="muted">"Use Postgres." Or: "We have time-series-ish data — use a time-series DB."</p>
+          </div>
+          <div>
+            <h4 class="fp">From first principles</h4>
+            <p>What's the read pattern? Write pattern? Consistency model required? Cardinality? Query shape? "Postgres" is usually right because it's flexible — but you should be able to <em>say</em> why for your shape, not just inherit it.</p>
+          </div>
+          <div>
+            <h4>What changes</h4>
+            <p class="muted">You still pick Postgres — but with deliberate choices about partitioning, indexes, and a clear migration story you didn't have before.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex">
+        <div class="ex-head">
+          <span class="ix-num">05</span>
+          <h3>Debugging the flaky test</h3>
+          <span class="topic">// DEBUGGING</span>
+        </div>
+        <div class="body">
+          <div>
+            <h4>The default analogy</h4>
+            <p class="muted">"It's flaky. Retry it three times in CI. Everyone does that." (Or: <code style="font-family:var(--font-input)">@flaky</code> annotation.)</p>
+          </div>
+          <div>
+            <h4 class="fp">From first principles</h4>
+            <p>A flaky test is a true statement about your system — it says something is non-deterministic. What state is shared? What timing assumption is encoded? Five whys until you find the actual race.</p>
+          </div>
+          <div>
+            <h4>What changes</h4>
+            <p class="muted">You find a shared mutable singleton three layers down. The "flake" was a real production bug under load — you just hadn't been paged yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex">
+        <div class="ex-head">
+          <span class="ix-num">06</span>
+          <h3>API design</h3>
+          <span class="topic">// INTERFACES</span>
+        </div>
+        <div class="body">
+          <div>
+            <h4>The default analogy</h4>
+            <p class="muted">"REST with these resources, because that's how Stripe does it. Or GraphQL, because Shopify."</p>
+          </div>
+          <div>
+            <h4 class="fp">From first principles</h4>
+            <p>Who calls this and how often? What does the caller need to know — and not know — to be successful? What invariants does the API have to preserve regardless of client behavior? Style follows from that.</p>
+          </div>
+          <div>
+            <h4>What changes</h4>
+            <p class="muted">Half the endpoints collapse. The remaining ones model intent (<code style="font-family:var(--font-input)">/refund</code>) rather than data (<code style="font-family:var(--font-input)">PATCH /payment</code>) — and the clients get simpler.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex">
+        <div class="ex-head">
+          <span class="ix-num">07</span>
+          <h3>"We need to migrate to Kubernetes."</h3>
+          <span class="topic">// INFRASTRUCTURE</span>
+        </div>
+        <div class="body">
+          <div>
+            <h4>The default analogy</h4>
+            <p class="muted">"It's the industry standard. Everyone runs on k8s. We'll look unprofessional without it."</p>
+          </div>
+          <div>
+            <h4 class="fp">From first principles</h4>
+            <p>What problem does k8s solve — multi-tenant scheduling, declarative ops, portable workloads? Do we have those problems right now, or in the next 18 months? What does the maintenance cost look like at our team size?</p>
+          </div>
+          <div>
+            <h4>What changes</h4>
+            <p class="muted">You stay on managed containers for another year, ship features instead of YAML, and revisit k8s when your team is 3× larger and the actual constraints have arrived.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TEAM WORKFLOW -->
+<section id="team" class="padded bordered deep">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">06</span>&nbsp;IN THE TEAM</div>
+    <h2 class="section-title">How to put this into a workflow without slowing the team to a crawl.</h2>
+    <p class="section-lead">First principles is expensive. Used everywhere, it grinds the team to a halt — used nowhere, you inherit drift. The job is to apply it where the stakes justify the cost: hard-to-reverse decisions, recurring problems, anything with the word "always" attached.</p>
+
+    <div class="workflow-grid">
+      <div class="panel">
+        <h3>The First-Principles RFC</h3>
+        <p>For any non-trivial design doc, require these four sections — in order. The order matters. Solutions before atoms is how analogies sneak in.</p>
+        <ol>
+          <li><strong>Goal in plain language.</strong> No solution words. The reader should be able to disagree with the goal before they see your answer.</li>
+          <li><strong>Atoms.</strong> Constraints, requirements, measured data, hard limits. Mark each as fact / constraint / convention.</li>
+          <li><strong>Assumptions, named.</strong> Anything you believe but can't prove. The riskiest ones first.</li>
+          <li><strong>Proposal, derived.</strong> A solution that uses <em>only</em> the atoms — and a paragraph on what would have to change for this to be wrong.</li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h3>Running a First-Principles Session</h3>
+        <p>A 60-minute workshop format that works for architecture decisions, incident retros, and "why does this keep happening?" loops.</p>
+        <ol>
+          <li><strong>10m — frame.</strong> One person states the problem. Everyone writes the goal in their own words.</li>
+          <li><strong>15m — decompose.</strong> Silent: list every atom you can on stickies. Don't filter.</li>
+          <li><strong>15m — sort.</strong> Cluster atoms. Tag each fact / constraint / convention. Disagreement here is the real work.</li>
+          <li><strong>15m — invert.</strong> "How would we guarantee this fails?" Use as a check on the proposal.</li>
+          <li><strong>5m — capture.</strong> The four-section RFC writes itself from the wall.</li>
+        </ol>
+      </div>
+
+      <div class="panel">
+        <h3>Questions to seed in any review</h3>
+        <p>Drop these into design reviews, retros, and 1:1s. They're cheap, they don't require a workshop, and they shift the room without confrontation.</p>
+        <ul>
+          <li>What problem is this convention solving — does it still apply <em>here</em>?</li>
+          <li>If we were starting today with no prior code, would we build this?</li>
+          <li>What's the cheapest thing that would prove this assumption wrong?</li>
+          <li>What would have to be true for us to do <em>nothing</em>?</li>
+          <li>If this fails, what's the failure mode we didn't list?</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h3>Cultural prerequisites</h3>
+        <p>First principles dies fast in a low-trust room. The method only works if people can say "I don't know" without paying for it socially. Specifically:</p>
+        <ul>
+          <li>Stupid questions get welcomed — they're usually the most useful ones.</li>
+          <li>"Why do we do this?" can be asked of senior people without it reading as insubordination.</li>
+          <li>The right answer is allowed to be "no change" — the goal is honest reasoning, not novelty.</li>
+          <li>Leaders model "I don't know" out loud. Often.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="promptbank" style="margin-top: 32px;">
+      <h3>Prompt bank — by context</h3>
+      <div class="qrow"><div class="ctx">// DESIGN REVIEW</div><div class="q">"Walk me through the goal as if I've never seen this product. What's the irreducible thing we're trying to make true?"</div></div>
+      <div class="qrow"><div class="ctx">// RFC FEEDBACK</div><div class="q">"Which assumption in here, if false, would change the whole proposal? What would it cost to test it?"</div></div>
+      <div class="qrow"><div class="ctx">// INCIDENT RETRO</div><div class="q">"What did the system actually do — not what we expected? At which step did our mental model diverge from reality?"</div></div>
+      <div class="qrow"><div class="ctx">// REFACTOR PITCH</div><div class="q">"Before we change this — why is it like this? Whose problem did this shape solve, and is that problem still here?"</div></div>
+      <div class="qrow"><div class="ctx">// BUILD-VS-BUY</div><div class="q">"Strip the vendor's marketing. List the functions it performs. Which are core to us, which are commodity?"</div></div>
+      <div class="qrow"><div class="ctx">// HIRING / PROCESS</div><div class="q">"If we didn't have this step, what bad thing would actually happen? Is that the cheapest way to prevent it?"</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PITFALLS -->
+<section id="pitfalls" class="padded bordered">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">07</span>&nbsp;PITFALLS</div>
+    <h2 class="section-title">When first principles becomes the wrong tool.</h2>
+    <p class="section-lead">The technique is powerful enough that it earns its own warning label. Most failure modes share a root cause: confusing "I have not understood this" with "this has no reason to exist."</p>
+
+    <div class="pitfalls-grid">
+      <div class="pitfall">
+        <div class="pix">CHESTERTON'S FENCE</div>
+        <h3>You don't get to remove what you haven't understood.</h3>
+        <p>That weird middleware, that retry loop, that null check — all were put there by someone solving a real problem. First principles is the right to remove them <em>after</em> you've understood them, not before.</p>
+      </div>
+      <div class="pitfall">
+        <div class="pix">REINVENTING THE WHEEL</div>
+        <h3>"From scratch" is not the same as "smart."</h3>
+        <p>The standard solution often <em>is</em> the first-principles answer — proven by ten thousand teams before you. Rederiving Postgres is a thought exercise, not a deliverable.</p>
+      </div>
+      <div class="pitfall">
+        <div class="pix">ANALYSIS PARALYSIS</div>
+        <h3>You can decompose forever.</h3>
+        <p>If you don't pre-commit to a depth and a deadline, the method becomes a way of avoiding the decision rather than making it. Pick a budget. When it's up, ship the best answer you have.</p>
+      </div>
+      <div class="pitfall">
+        <div class="pix">FALSE AXIOMS</div>
+        <h3>Your "atoms" are often assumptions in disguise.</h3>
+        <p>"Users want X." "Latency must be under 100ms." "We can't break this API." These feel like facts and are usually constraints — sometimes negotiable ones. Mark them as such.</p>
+      </div>
+      <div class="pitfall">
+        <div class="pix">SOLO-HEROISM</div>
+        <h3>One person's first principles is another's blind spot.</h3>
+        <p>The technique cuts through groupthink — but only with a group. Run it alone and you'll just rederive your own priors with extra steps. Get adversarial readers.</p>
+      </div>
+      <div class="pitfall">
+        <div class="pix">WRONG-TOOL</div>
+        <h3>Not every problem needs the slow path.</h3>
+        <p>Naming a variable, fixing a typo, picking a logging format — analogy is fine, analogy is good. Save first principles for decisions you'll have to live with for a year.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENTAL MODELS -->
+<section id="models" class="padded bordered deep">
+  <div class="container">
+    <div class="eyebrow"><span class="ix">08</span>&nbsp;PAIRS WELL WITH</div>
+    <h2 class="section-title">A latticework, not a single lens.</h2>
+    <p class="section-lead">First principles is one mental model. Munger's point was that you want a <em>latticework</em> — overlapping models that catch each other's blind spots. These are the ones that pair best for engineering work.</p>
+
+    <div class="models">
+      <div class="model">
+        <div class="glyph">// 01 — INVERSION</div>
+        <h3>Solve forward; check backward.</h3>
+        <p>After you derive the answer, ask: "How would I guarantee this fails?" If your design quietly answers yes to several of those, your atoms were incomplete.</p>
+        <div class="pair">Pair with: STEP 04 — rebuild</div>
+      </div>
+      <div class="model">
+        <div class="glyph">// 02 — SECOND-ORDER</div>
+        <h3>"And then what?"</h3>
+        <p>First-order thinking stops at the immediate effect. Second-order asks what happens once the world adapts to your change. The cache works — and then everyone codes against the cache, and then…</p>
+        <div class="pair">Pair with: any "build vs buy" decision</div>
+      </div>
+      <div class="model">
+        <div class="glyph">// 03 — CHESTERTON'S FENCE</div>
+        <h3>Understand before you delete.</h3>
+        <p>The guard rail against first-principles arrogance. Every weird thing in your codebase had a reason. First derive that reason, then decide whether it still holds.</p>
+        <div class="pair">Pair with: any refactor or migration</div>
+      </div>
+      <div class="model">
+        <div class="glyph">// 04 — FEYNMAN</div>
+        <h3>If you can't say it simply, you don't know it.</h3>
+        <p>Explain your design to someone three layers removed. Wherever you hit jargon, you've found a hole in your own reasoning, not theirs.</p>
+        <div class="pair">Pair with: writing the RFC</div>
+      </div>
+      <div class="model">
+        <div class="glyph">// 05 — STEELMAN</div>
+        <h3>Argue the opposing case better than its loudest proponent.</h3>
+        <p>Before you "win" the decision, build the strongest version of the position you're rejecting. If you can't, you haven't done the work.</p>
+        <div class="pair">Pair with: design review</div>
+      </div>
+      <div class="model">
+        <div class="glyph">// 06 — YAGNI</div>
+        <h3>You Aren't Gonna Need It.</h3>
+        <p>The corollary to "rebuild from atoms": don't add atoms that aren't required <em>yet</em>. First principles makes you derive what's needed — YAGNI keeps you from deriving what isn't.</p>
+        <div class="pair">Pair with: STEP 02 — decompose</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <div class="closing-bg" aria-hidden="true"></div>
+  <div class="container">
+    <span class="pill pill-amber">HOW WE START USING THIS</span>
+    <h2 style="margin-top: 24px;">Pick the next hard call. Run the four steps.</h2>
+    <p>We don't adopt first principles by reading about it. We pick one real decision on our plate this week — a database choice, a refactor, a vendor, a retry policy — and we run it through the method together. Frame the goal. List the atoms. Challenge each. Rebuild. See what survives.</p>
+    <p style="margin-top: 24px;">If it works, we'll do it again. If it doesn't, we'll know what broke and adjust. That's the whole onboarding.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site">
+  <div class="container row">
+    <div class="small">// Internal · For the team · Discuss in the next design review</div>
+    <nav>
+      <a href="#origins">Origins</a>
+      <a href="#method">Method</a>
+      <a href="#examples">Examples</a>
+      <a href="#team">Team</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#models">Models</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
