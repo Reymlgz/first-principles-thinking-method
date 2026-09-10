@@ -1,3 +1,4 @@
+/*
 export default {
   async fetch(request, env) {
     const auth = request.headers.get("Authorization");
@@ -20,3 +21,10 @@ function isValid(header, user, pass) {
   const expected = btoa(`${user}:${pass}`);
   return header === `Basic ${expected}`;
 }
+*/
+
+export default {
+  async fetch(request, env) {
+    return env.ASSETS.fetch(request);
+  },
+};
